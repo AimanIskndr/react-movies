@@ -18,9 +18,6 @@ const API_OPTIONS = {
 }
 
 const App = () => {
-  console.log('App component rendering...');
-  console.log('API_KEY:', import.meta.env.VITE_TMDB_API_KEY ? 'Set' : 'Not set');
-  
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -59,10 +56,9 @@ const App = () => {
 
       setMovieList(data.results || []);
 
-      // Temporarily disable Appwrite search count updates
-      // if(query && data.results.length > 0) {
-      //   await updateSearchCount(query, data.results[0]);
-      // }
+      if(query && data.results.length > 0) {
+        await updateSearchCount(query, data.results[0]);
+      }
     } catch (error) {
       console.error(`Error fetching movies: ${error}`);
       setErrorMessage('Error fetching movies. Please try again later.');
@@ -73,20 +69,11 @@ const App = () => {
 
   const loadTrendingMovies = async () => {
     try {
-      // Temporarily disable Appwrite to test basic functionality
-      console.log('Skipping Appwrite trending movies for now');
-      setTrendingMovies([]);
-      
-      // Uncomment below when Appwrite CORS is fixed:
-      // const movies = await getTrendingMovies();
-      // if (Array.isArray(movies)) {
-      //   setTrendingMovies(movies);
-      // } else {
-      //   setTrendingMovies([]);
-      // }
+      const movies = await getTrendingMovies();
+
+      setTrendingMovies(movies);
     } catch (error) {
       console.error(`Error fetching trending movies: ${error}`);
-      setTrendingMovies([]);
     }
   }
 
@@ -99,13 +86,13 @@ const App = () => {
   }, []);
 
   return (
-    <main style={{ minHeight: '100vh', backgroundColor: '#030014' }}>
+    <main>
       <div className="pattern"/>
 
       <div className="wrapper">
         <header>
           <img src="./hero.png" alt="Hero Banner" />
-          <h1 style={{ color: 'white' }}>Find <span className="text-gradient">Movies</span> You'll Enjoy Without the Hassle</h1>
+          <h1>Find <span className="text-gradient">Movies</span> You'll Enjoy Without the Hassle</h1>
 
           <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </header>

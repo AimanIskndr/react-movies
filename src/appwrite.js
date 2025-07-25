@@ -47,7 +47,6 @@ export const getTrendingMovies = async () => {
 
   return result.documents;
  } catch (error) {
-  console.error('Error fetching trending movies:', error);
-  return []; // Return empty array instead of undefined
+  console.error(error);
  }
 }
